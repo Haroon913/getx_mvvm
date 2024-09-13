@@ -19,14 +19,17 @@ class RoundButton extends StatelessWidget {
   final Color textColor,buttonColor;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: BoxDecoration(
-        color: buttonColor,
-        borderRadius: BorderRadius.circular(20),
+    return InkWell(
+      onTap: onPress,
+      child: Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          color: buttonColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: loading?Center(child: CircularProgressIndicator(color: textColor,)):Center(child: Text(title)),
       ),
-      child: loading?Center(child: CircularProgressIndicator(color: textColor,)):Center(child: Text(title)),
     );
   }
 }

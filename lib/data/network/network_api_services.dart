@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:getx_mvvm/data/app_exceptions.dart';
 import 'package:getx_mvvm/data/network/base_api_services.dart';
 import 'package:http/http.dart'as http;
 class NetworkApiServices extends BaseApiServices{
   @override
-  Future<dynamic> getApi(String url)async{
+  Future<dynamic> getApi(String Url)async{
     dynamic responseJson;
     try{
-      final response=await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
-      responseJson= responseJson(response);
+      final response=await http.get(Uri.parse(Url)).timeout(const Duration(seconds: 10));
+      responseJson= returnResponse(response);
     }on SocketException{
       throw InternetException('');
     }on RequestTimeOut{
@@ -25,15 +24,17 @@ class NetworkApiServices extends BaseApiServices{
     dynamic responseJson;
     try{
       final response=await http.post(Uri.parse(url),
-        body:jsonEncode(data)
+        body:data
       ).timeout(const Duration(seconds: 10));
-      responseJson= responseJson(response);
+      responseJson= returnResponse(response);
     }on SocketException{
       throw InternetException('');
     }on RequestTimeOut{
       throw RequestTimeOut('');
     }
-
+if(kDebugMode){
+  print(responseJson);
+}
     return responseJson;
 
   }
@@ -43,7 +44,8 @@ class NetworkApiServices extends BaseApiServices{
         dynamic responseJson=jsonDecode(response.body);
         return responseJson;
       case 400:
-        throw InvalidUrlException;
+        dynamic responseJson=jsonDecode(response.body);
+        return responseJson;
         default:
           throw FetchDataException;
     }
